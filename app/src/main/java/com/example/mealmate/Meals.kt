@@ -1,59 +1,26 @@
 package com.example.mealmate
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity
+@Entity (tableName = "Meals")
 data class Meals(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val meal: String?,
-    val drinkAlternate: String?,
-    val category: String?,
-    val area: String?,
-    val instructions: String?,
-    val mealThumb: String?,
-    val tags: String?,
-    val youtube: String?,
-    val ingredients: List<String>?,
-    val measures: List<String>?,
-    val Source: String?,
-    val ImageSource: String?,
-    val CreativeCommonsConfirmed : String?,
-    val dateModified: String?
-) {
-    // Constructor
-    constructor(
-        meal: String?,
-        drinkAlternate: String?,
-        category: String?,
-        area: String?,
-        instructions: String?,
-        mealThumb: String?,
-        tags: String?,
-        youtube: String?,
-        ingredients: List<String>?,
-        measures: List<String>?,
-        Source: String?,
-        ImageSource: String?,
-        CreativeCommonsConfirmed : String?,
-        dateModified: String?
-    ) : this(
-        0,
-        meal,
-        drinkAlternate,
-        category,
-        area,
-        instructions,
-        mealThumb,
-        tags,
-        youtube,
-        ingredients,
-        measures,
-        Source,
-        ImageSource,
-        CreativeCommonsConfirmed,
-        dateModified
-    )
-}
+    @ColumnInfo(name = "Meal") val meal: String?,
+    @ColumnInfo(name = "DrinkAlternate") val drinkAlternate: String?,
+    @ColumnInfo(name = "Category") val category: String?,
+    @ColumnInfo(name = "Area") val area: String?,
+    @ColumnInfo(name = "Instructions") val instructions: String?,
+    @ColumnInfo(name = "MealThumb") val mealThumb: String?,
+    @ColumnInfo(name = "Tags") val tags: String?,
+    @ColumnInfo(name = "Youtube") val youtube: String?,
+    @ColumnInfo(name = "Ingredients") val ingredients: List<String>?,
+    @ColumnInfo(name = "Measures") val measures: List<String>?,
+    @ColumnInfo(name = "Source") val source: String?,
+    @ColumnInfo(name = "ImageSource") val imageSource: String?,
+    @ColumnInfo(name = "CreativeCommonsConfirmed") val creativeCommonsConfirmed : String?,
+    @ColumnInfo(name = "DateModified") val dateModified: String?)
+
 
 

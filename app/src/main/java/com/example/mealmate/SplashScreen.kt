@@ -26,7 +26,7 @@ class SplashScreen : AppCompatActivity() {
         image.alpha=0f
 
         // Use the animate() method of the image to animate the alpha value from 0 to 1 over a duration of 3000 milliseconds (3 seconds).
-        image.animate().setDuration(3000).alpha(1f).withEndAction{
+        image.animate().setDuration(2500).alpha(1f).withEndAction{
             // When the animation ends, create an Intent object with the current activity context and the class of the destination activity.
             val intent = Intent(this,MainActivity::class.java)
             // Start the destination activity with the Intent object.

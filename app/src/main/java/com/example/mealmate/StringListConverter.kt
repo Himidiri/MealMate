@@ -3,6 +3,7 @@ package com.example.mealmate
 import androidx.room.TypeConverter
 
 class StringListConverter {
+
     @TypeConverter
     fun fromString(value: String?): List<String>? {
         return value?.split(",")
@@ -12,4 +13,5 @@ class StringListConverter {
     fun toString(value: List<String>?): String? {
         return value?.joinToString(",")
     }
+
 }

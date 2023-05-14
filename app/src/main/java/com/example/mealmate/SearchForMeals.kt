@@ -8,6 +8,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
+// Activity for searching meals
 class SearchForMeals : AppCompatActivity() {
 
     private lateinit var db: MealDatabase
@@ -23,22 +24,30 @@ class SearchForMeals : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search_for_meals)
 
+        // Initialize the MealDatabase
         db = MealDatabase.getDatabase(this)
 
+        // Initialize views
         anyString = findViewById(R.id.anyString)
         search = findViewById(R.id.search)
         mealsContainer = findViewById(R.id.mealsContainer)
 
+        // Set click listener for search button
         searchButton()
 
+        // Retrieve saved instance state data
         savedInstanceState?.let {
-            savedMealImages = it.getStringArrayList("mealImages")?.toMutableList() ?: mutableListOf()
-            savedAllMealsDetails = it.getStringArrayList("allMealsDetails")?.toMutableList() ?: mutableListOf()
+            savedMealImages =
+                it.getStringArrayList("mealImages")?.toMutableList() ?: mutableListOf()
+            savedAllMealsDetails =
+                it.getStringArrayList("allMealsDetails")?.toMutableList() ?: mutableListOf()
         }
 
+        // Display saved meal images and details
         savedMealImages.forEachIndexed { index, imageUrl ->
             val mealItemView = layoutInflater.inflate(R.layout.meal_item, null)
             val mealImage: ImageView = mealItemView.findViewById(R.id.mealImage)
+            // Load image using Glide library
             Glide.with(this@SearchForMeals)
                 .load(imageUrl)
                 .into(mealImage)
@@ -51,12 +60,14 @@ class SearchForMeals : AppCompatActivity() {
         }
     }
 
+    // Save instance state data
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putStringArrayList("mealImages", ArrayList(savedMealImages))
         outState.putStringArrayList("allMealsDetails", ArrayList(savedAllMealsDetails))
     }
 
+    // Set click listener for the search button
     private fun searchButton() {
         search?.setOnClickListener {
             val query = anyString.text.toString().trim().toLowerCase()
@@ -71,11 +82,13 @@ class SearchForMeals : AppCompatActivity() {
             runBlocking {
                 withContext(Dispatchers.IO) {
                     meals.clear()
+                    // Retrieve all meals from the database
                     val allMeals = db.mealDao().getAll()
                     for (meal in allMeals) {
                         val mealName = meal.meal?.toLowerCase()
                         val ingredients =
                             meal.ingredients?.joinToString(separator = ",")?.toLowerCase()
+                        // Check if the meal name or ingredients contain the search query
                         if (mealName?.contains(query) == true || ingredients?.contains(query) == true) {
                             meals.add(meal)
                         }
@@ -95,8 +108,10 @@ class SearchForMeals : AppCompatActivity() {
                     meals.forEach { meal ->
                         val mealItemView = layoutInflater.inflate(R.layout.meal_item, null)
                         val mealImage: ImageView = mealItemView.findViewById(R.id.mealImage)
-                        val allMealsDetails: TextView = mealItemView.findViewById(R.id.allMealsDetails)
+                        val allMealsDetails: TextView =
+                            mealItemView.findViewById(R.id.allMealsDetails)
 
+                        // Load meal thumbnail image using Glide library
                         meal.mealThumb?.let { thumbnailUrl ->
                             Glide.with(this@SearchForMeals)
                                 .load(thumbnailUrl)
@@ -106,6 +121,7 @@ class SearchForMeals : AppCompatActivity() {
 
                         val stb = StringBuilder()
 
+                        // Append meal details to a StringBuilder
                         stb.append("\"Meal\":\"${meal.meal}\",\n")
                         stb.append("\"DrinkAlternate\":${meal.drinkAlternate},\n")
                         stb.append("\"Category\":\"${meal.category}\",\n")

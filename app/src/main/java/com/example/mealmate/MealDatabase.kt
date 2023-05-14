@@ -6,34 +6,40 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
-// Define the schema of the database using Room annotations
+// Define the database and its entities
 @Database(entities = [Meals::class], version = 1)
 @TypeConverters(StringListConverter::class)
 abstract class MealDatabase : RoomDatabase() {
+
+    // Declare an abstract function to retrieve the DAO (Data Access Object)
     abstract fun mealDao(): MealsDao
 
-    companion object{
-
+    companion object {
+        // Define a volatile variable to ensure visibility across threads
         @Volatile
-        private var INSTANCE : MealDatabase? = null
+        private var INSTANCE: MealDatabase? = null
 
-        fun getDatabase(context: Context): MealDatabase{
+        // Create a method to get the database instance
+        fun getDatabase(context: Context): MealDatabase {
 
+            // Check if an instance of the database already exists
             val tempInstance = INSTANCE
-            if(tempInstance != null){
+            if (tempInstance != null) {
                 return tempInstance
             }
-            synchronized(this){
+
+            // Synchronize the code to ensure only one thread creates the database instance
+            synchronized(this) {
+                // Build the database using Room.databaseBuilder and assign it to the instance
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     MealDatabase::class.java,
                     "meal_database"
                 ).build()
+
                 INSTANCE = instance
                 return instance
             }
-
         }
-
     }
 }

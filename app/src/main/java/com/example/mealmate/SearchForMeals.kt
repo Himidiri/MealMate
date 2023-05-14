@@ -1,23 +1,12 @@
 package com.example.mealmate
 
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.*
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.SimpleTarget
-import com.bumptech.glide.request.transition.Transition
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import org.json.JSONArray
-import org.json.JSONObject
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.net.HttpURLConnection
-import java.net.URL
 
 class SearchForMeals : AppCompatActivity() {
 
@@ -27,7 +16,9 @@ class SearchForMeals : AppCompatActivity() {
     private lateinit var mealsContainer: LinearLayout
 
     var search: Button? = null
-    private val stb = StringBuilder()
+    private var savedMealImages: MutableList<String?> = mutableListOf()
+    private var savedAllMealsDetails: MutableList<String?> = mutableListOf()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search_for_meals)
@@ -39,6 +30,31 @@ class SearchForMeals : AppCompatActivity() {
         mealsContainer = findViewById(R.id.mealsContainer)
 
         searchButton()
+
+        savedInstanceState?.let {
+            savedMealImages = it.getStringArrayList("mealImages")?.toMutableList() ?: mutableListOf()
+            savedAllMealsDetails = it.getStringArrayList("allMealsDetails")?.toMutableList() ?: mutableListOf()
+        }
+
+        savedMealImages.forEachIndexed { index, imageUrl ->
+            val mealItemView = layoutInflater.inflate(R.layout.meal_item, null)
+            val mealImage: ImageView = mealItemView.findViewById(R.id.mealImage)
+            Glide.with(this@SearchForMeals)
+                .load(imageUrl)
+                .into(mealImage)
+            mealsContainer.addView(mealItemView)
+
+            savedAllMealsDetails.getOrNull(index)?.let { details ->
+                val allMealsDetails: TextView = mealItemView.findViewById(R.id.allMealsDetails)
+                allMealsDetails.text = details
+            }
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putStringArrayList("mealImages", ArrayList(savedMealImages))
+        outState.putStringArrayList("allMealsDetails", ArrayList(savedAllMealsDetails))
     }
 
     private fun searchButton() {
@@ -73,42 +89,43 @@ class SearchForMeals : AppCompatActivity() {
                     mealsContainer.addView(noResultTextView)
                 } else {
                     mealsContainer.removeAllViews() // Clear previous search results
+                    savedMealImages.clear()
+                    savedAllMealsDetails.clear()
+
                     meals.forEach { meal ->
-                        // Inflate meals_item.xml for each search result
                         val mealItemView = layoutInflater.inflate(R.layout.meal_item, null)
-                        // Find views in meals_item.xml
                         val mealImage: ImageView = mealItemView.findViewById(R.id.mealImage)
                         val allMealsDetails: TextView = mealItemView.findViewById(R.id.allMealsDetails)
 
-                        // Load thumbnail image using Glide
                         meal.mealThumb?.let { thumbnailUrl ->
                             Glide.with(this@SearchForMeals)
                                 .load(thumbnailUrl)
                                 .into(mealImage)
+                            savedMealImages.add(thumbnailUrl)
                         }
 
-                        // Build the details string
-                        stb.clear()
-                        stb.append("\"Meal\": \"${meal.meal}\",\n")
-                        stb.append("\"Drink Alternate\": ${meal.drinkAlternate},\n")
-                        stb.append("\"Category\": \"${meal.category}\",\n")
-                        stb.append("\"Area\": \"${meal.area}\",\n")
-                        stb.append("\"Instructions\": \"${meal.instructions}\",\n")
-                        stb.append("\"Tags\": ${meal.tags},\n")
-                        stb.append("\"Youtube\": \"${meal.youtube}\",\n")
+                        val stb = StringBuilder()
+
+                        stb.append("\"Meal\":\"${meal.meal}\",\n")
+                        stb.append("\"DrinkAlternate\":${meal.drinkAlternate},\n")
+                        stb.append("\"Category\":\"${meal.category}\",\n")
+                        stb.append("\"Area\":\"${meal.area}\",\n")
+                        stb.append("\"Instructions\":\"${meal.instructions}\",\n")
+                        stb.append("\"Tags\":${meal.tags},\n")
+                        stb.append("\"Youtube\":\"${meal.youtube}\",\n")
 
                         meal.ingredients?.forEachIndexed { index, ingredient ->
-                            stb.append("\"Ingredient${index + 1}\": \"$ingredient\",\n")
+                            stb.append("\"Ingredient${index + 1}\":\"$ingredient\",\n")
                         }
 
                         meal.measures?.forEachIndexed { index, measure ->
-                            stb.append("\"Measure${index + 1}\": \"$measure\",\n")
+                            stb.append("\"Measure${index + 1}\":\"$measure\",\n")
                         }
                         stb.append("\n\n")
-                        // Set the details string to the TextView
-                        allMealsDetails.text = stb.toString().trim()
 
-                        // Add the meals_item view to the mealsContainer LinearLayout
+                        allMealsDetails.text = stb.toString().trim()
+                        savedAllMealsDetails.add(allMealsDetails.text.toString())
+
                         mealsContainer.addView(mealItemView)
                     }
                 }

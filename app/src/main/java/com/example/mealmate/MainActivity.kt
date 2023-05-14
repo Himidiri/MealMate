@@ -12,6 +12,8 @@ import kotlinx.coroutines.runBlocking
 
 class MainActivity : AppCompatActivity() {
 
+    private var addMealsDBClicked: Boolean = false
+
     var addMealsDB: Button? = null
     var searchMealsByIngredient: Button? = null
     var searchForMeals: Button? = null
@@ -39,6 +41,27 @@ class MainActivity : AppCompatActivity() {
         addMealsDBButton()
         searchMealsByIngredientButton()
         searchForMealsButton()
+
+        // Restore the clicked state of the addMealsDB button if it was previously clicked
+        if (savedInstanceState != null) {
+            addMealsDBClicked = savedInstanceState.getBoolean("addMealsDBClicked")
+            if (addMealsDBClicked) {
+                disableAddMealsDBButton()
+            }
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean("addMealsDBClicked", addMealsDBClicked)
+    }
+
+    private fun disableAddMealsDBButton() {
+        addMealsDB?.apply {
+            isEnabled = false
+            setBackgroundColor(Color.GRAY)
+            setTextColor(Color.BLACK)
+        }
     }
 
     private fun addMealsDBButton() {
@@ -180,9 +203,8 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             Toast.makeText(this, "Meals Added To Database", Toast.LENGTH_SHORT).show()
-            addMealsDB?.setBackgroundColor(Color.GRAY)
-            addMealsDB?.setTextColor(Color.BLACK)
-            addMealsDB?.isEnabled = false
+            addMealsDBClicked = true
+            disableAddMealsDBButton()
         }
     }
     private fun searchMealsByIngredientButton() {

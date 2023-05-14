@@ -17,4 +17,8 @@ interface MealsDao {
 
     @Query("SELECT * FROM meals")
     suspend fun getAll(): List<Meals>
+
+    @Query("SELECT * FROM Meals WHERE meal LIKE '%' || :searchQuery || '%' OR ingredients LIKE '%' || :searchQuery || '%'")
+    suspend fun searchMeals(searchQuery: String): List<Meals>
+
 }

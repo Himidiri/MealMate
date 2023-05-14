@@ -179,7 +179,7 @@ class MainActivity : AppCompatActivity() {
                     mealsDao.insertMeals(meal1, meal2, meal3, meal4)
                 }
             }
-            Toast.makeText(this, "Meals added to database", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Meals Added To Database", Toast.LENGTH_SHORT).show()
             addMealsDB?.setBackgroundColor(Color.GRAY)
             addMealsDB?.setTextColor(Color.BLACK)
             addMealsDB?.isEnabled = false

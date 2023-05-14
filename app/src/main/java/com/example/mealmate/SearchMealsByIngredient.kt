@@ -24,7 +24,7 @@ class SearchMealsByIngredient : AppCompatActivity() {
 
     var retrieveMeals: Button? = null
     var saveMealsToDB: Button? = null
-    val stb = StringBuilder()
+    private val stb = StringBuilder()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,7 +46,7 @@ class SearchMealsByIngredient : AppCompatActivity() {
     private fun retrieveMealsButton() {
         retrieveMeals?.setOnClickListener {
             if (searchIngredient.text.isBlank()) {
-                Toast.makeText(this, "Please enter an ingredient", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Please Enter an Ingredient", Toast.LENGTH_SHORT).show()
             } else {
                 val ingredient = searchIngredient.text.toString()
                 val url = URL("https://www.themealdb.com/api/json/v1/1/filter.php?i=$ingredient")
@@ -76,7 +76,7 @@ class SearchMealsByIngredient : AppCompatActivity() {
         val mealsArray: JSONArray? = json.optJSONArray("meals")
 
         if (mealsArray == null) {
-            allmeals.append("No meals found")
+            allmeals.append("No Meals Found")
         } else {
             for (i in 0 until mealsArray.length()) {
                 val meal: JSONObject = mealsArray[i] as JSONObject
@@ -104,15 +104,14 @@ class SearchMealsByIngredient : AppCompatActivity() {
                 val mealArray: JSONArray = mealJson.getJSONArray("meals")
                 val mealObject: JSONObject = mealArray[0] as JSONObject
 
-                // Append all relevant data to the StringBuilder object
                 allmeals.append("\"Drink Alternate\" : \"${mealObject["strDrinkAlternate"]}\" ,\n")
                 allmeals.append("\"Category\" : \"${mealObject["strCategory"]}\" ,\n")
                 allmeals.append("\"Area\" : \"${mealObject["strArea"]}\" ,\n")
                 allmeals.append("\"Instructions\" : \"${mealObject["strInstructions"]}\" ,\n")
+                allmeals.append("\"MealThumb\" : \"${mealObject["strMealThumb"]}\" ,\n")
                 allmeals.append("\"Tags\" : \"${mealObject["strTags"]}\" ,\n")
                 allmeals.append("\"YouTube\" : \"${mealObject["strYoutube"]}\" ,\n")
-                //  allmeals.append("Ingredients :\n")
-                // Append all ingredients and their measurements to the StringBuilder object
+
                 val ingredientlist = mutableListOf<String>()
                 val measureslist = mutableListOf<String>()
                 for (j in 1..20) {
@@ -126,11 +125,11 @@ class SearchMealsByIngredient : AppCompatActivity() {
                     val measure = mealObject["strMeasure$k"]
                     if (measure != "") {
                         allmeals.append("\"Measure$k\" : \"$measure\" ,\n")
-                        //  allmeals.append("$ingredient: $measure\n")
                         measureslist.add(measure.toString())
                     }
                 }
-                /*   allmeals.append("\"Source\" : \"${mealObject["strSource"]}\" ,\n")
+
+                /* allmeals.append("\"Source\" : \"${mealObject["strSource"]}\" ,\n")
                 allmeals.append("\"ImageSource\" : \"${mealObject["strImageSource"]}\" ,\n")
                 allmeals.append("\"CreativeCommonsConfirmed\" : \"${mealObject["strCreativeCommonsConfirmed"]}\" ,\n")
                 allmeals.append("\"dateModified\" : \"${mealObject["dateModified"]}\" ,\n") */
@@ -177,7 +176,7 @@ class SearchMealsByIngredient : AppCompatActivity() {
                     }
                 }
             } else {
-                Toast.makeText(this, "No meals to save", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "No Meals To Save", Toast.LENGTH_SHORT).show()
             }
         }
     }

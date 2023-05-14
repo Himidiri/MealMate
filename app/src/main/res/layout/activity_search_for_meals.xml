@@ -77,18 +77,13 @@
 
             </androidx.cardview.widget.CardView>
 
-            <TextView
-                android:id="@+id/allMealsDetails"
+            <LinearLayout
+                android:id="@+id/mealsContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginBottom="40dp"
-                android:hint="The Meals Details Will Appear Here"
-                android:textColor="#FFFEFE"
-                android:textColorHint="#757474"
-                android:textSize="20sp" />
+                android:orientation="vertical">
+            </LinearLayout>
+
         </LinearLayout>
 
     </RelativeLayout>

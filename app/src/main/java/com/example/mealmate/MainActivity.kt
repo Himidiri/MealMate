@@ -17,6 +17,7 @@ class MainActivity : AppCompatActivity() {
     var addMealsDB: Button? = null
     var searchMealsByIngredient: Button? = null
     var searchForMeals: Button? = null
+    var searchMealsFromWebservice: Button? = null
     private lateinit var mealsDao: MealsDao
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,6 +32,7 @@ class MainActivity : AppCompatActivity() {
         addMealsDB = findViewById(R.id.addMealsToDB)
         searchMealsByIngredient = findViewById(R.id.searchMealsByIngredients)
         searchForMeals = findViewById(R.id.searchMeals)
+        searchMealsFromWebservice =findViewById(R.id.searchMealsBySubstring)
 
         // Enable the addMealsDB button
         addMealsDB?.isEnabled = true
@@ -39,6 +41,7 @@ class MainActivity : AppCompatActivity() {
         addMealsDBButton()
         searchMealsByIngredientButton()
         searchForMealsButton()
+        searchMealsFromWebServiceButton()
 
         // Restore the state of the addMealsDBClicked flag
         if (savedInstanceState != null) {
@@ -136,6 +139,14 @@ class MainActivity : AppCompatActivity() {
             // Create an intent to navigate to the SearchForMeals activity
             val searchMeals = Intent(this, SearchForMeals::class.java)
             startActivity(searchMeals)
+        }
+    }
+
+    private fun searchMealsFromWebServiceButton() {
+        searchMealsFromWebservice?.setOnClickListener {
+            // Create an intent to navigate to the SearchForMeals activity
+            val  searchMealsFromWeb = Intent(this, SearchMealsFromWebService::class.java)
+            startActivity(searchMealsFromWeb)
         }
     }
 }

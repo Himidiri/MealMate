@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">MealMate</string>
+    <string name="API_KEY">PUT YOUR API KEY HERE</string>
 </resources>
